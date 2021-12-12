@@ -14,6 +14,9 @@ export const GlobalStyle = createGlobalStyle`
 
 		--background: #F0F2F5;
 		--shape: #FFFFFF;
+		--shape-input: #E7E9EE;
+
+		--border-color: #D7D7D7;
 
 	}
 
@@ -58,4 +61,24 @@ export const GlobalStyle = createGlobalStyle`
 		opacity: 0.6;
 		cursor: not-allowed;
 	}
+
+	.react-modal-overlay {
+		background-color: rgba(0, 0, 0, 0.5);
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.react-modal-content {
+		max-width: 576px;
+		width: 100%;
+	}
+};
+
 `

@@ -1,10 +1,12 @@
-import styled from 'styled-components';
 import dtMoneyLogoImg from '../../assets/logo.svg';
 import dtMoneyLogoMobileImg from '../../assets/logo-mobile.svg';
-
 import { Container, LogoImage, NewTransaction, Wrapper } from './styles';
 
-export function Header() {
+interface HeaderProps {
+	handleOpenNewTransactionModal: () => void;
+}
+
+export function Header({ handleOpenNewTransactionModal }: HeaderProps) {
 
 	return (
 		<Container>
@@ -28,7 +30,9 @@ export function Header() {
 					/>
 				</LogoImage>
 
-				<NewTransaction>
+				<NewTransaction
+					onClick={handleOpenNewTransactionModal}
+				>
 					Nova transação
 				</NewTransaction>
 
