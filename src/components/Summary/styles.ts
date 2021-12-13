@@ -51,4 +51,10 @@ export const CardResume = styled.section<cardResumeProps>`
 		line-height: 1.4;
 		font-weight: 500;
 	}
+
+	span {
+		font-size: 2.25rem;
+		line-height: 1.4;
+		font-weight: 400;
+	}
 `

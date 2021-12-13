@@ -3,7 +3,7 @@ import closeModalImg from '../../assets/icone-fechar.svg';
 import depositImg from '../../assets/seta-entradas.svg';
 import withdrawalImg from '../../assets/seta-saidas.svg';
 
-import { darken } from 'polished';
+import { darken, transparentize } from 'polished';
 
 export const Container = styled.div`
 	max-width: 576px;
@@ -85,79 +85,6 @@ export const Form = styled.form`
 		align-items: center;
 		justify-content: stretch;
 		margin-top: 1rem;
-
-		.new-transaction__transaction-field {
-			color: var(--text-title);
-			background-color: var(--background);
-			border: 1px solid var(--border-color);
-			border-radius: 5px;
-			text-align: center;
-			padding: 0.2rem 1rem;
-			height: 4rem;
-			flex: 1 1 50%;
-			cursor: pointer;
-
-			display: flex;
-			align-items: center;
-			justify-content: center;
-
-			transition: 0.3s ease-in;
-
-			&--active {
-				background-color: var(--blue);
-				color: var(--text-white);
-			}
-
-			&:hover {
-				border-color: ${darken(0.2, '#D7D7D7')};
-			}
-
-			& ~ div {
-				margin-left: 8px;
-			}
-
-			label {
-				font-size: 1rem;
-				line-height: 1.5;
-				font-weight: 400;
-
-				display: flex;
-				align-items: center;
-				justify-content: center;
-
-				&[for="deposit"]::before {
-					content: '';
-					background-image: url(${depositImg});
-				}
-				
-				&[for="withdrawal"]::before {
-					content: '';
-					background-image: url(${withdrawalImg});
-				}
-
-				&::before {
-					content: '';
-					background-color: transparent;
-					background-repeat: no-repeat;
-					background-size: 24px 24px;
-					background-position: center;
-					width: 24px;
-					height: 24px;
-					margin-right: 1.1rem;
-					display: inline-block;		
-				}
-
-			}
-
-			input {
-				appearance: none;
-				display: inline-block;
-				width: 0px;
-				height: 0px;
-			}
-
-		}
-
 	}
 
 	button[type='submit'] {
@@ -185,4 +112,74 @@ export const Form = styled.form`
 		}
 	}
 
+`
+
+interface RadioBoxProps {
+	isActive: boolean;
+	activeColor: string;
+}
+
+export const RadioBox = styled.button<RadioBoxProps>`
+	color: var(--text-title);
+	background-color: ${(props) => props.isActive ? transparentize(0.9, props.activeColor) : "#F0F2F5" };
+	border: 1px solid var(--border-color);
+	border-radius: 5px;
+	text-align: center;
+	padding: 0.2rem 1rem;
+	height: 4rem;
+	flex: 1 1 50%;
+	cursor: pointer;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	transition: 0.3s ease-in;
+
+	&--active {
+		background-color: var(--blue);
+		color: var(--text-white);
+	}
+
+	&:hover {
+		border-color: ${darken(0.2, '#D7D7D7')};
+	}
+
+	& ~ button {
+		margin-left: 8px;
+	}
+
+	label {
+		font-size: 1rem;
+		line-height: 1.5;
+		font-weight: 400;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+
+		&[for="deposit"]::before {
+			content: '';
+			background-image: url(${depositImg});
+		}
+		
+		&[for="withdrawal"]::before {
+			content: '';
+			background-image: url(${withdrawalImg});
+		}
+
+		&::before {
+			content: '';
+			background-color: transparent;
+			background-repeat: no-repeat;
+			background-size: 24px 24px;
+			background-position: center;
+			width: 24px;
+			height: 24px;
+			margin-right: 1.1rem;
+			display: inline-block;		
+		}
+
+	}
 `

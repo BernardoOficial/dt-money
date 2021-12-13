@@ -1,16 +1,65 @@
-import { useEffect } from "react";
+import { useTransactions } from "../../hooks/useTransactions";
+
 import { Container, Table } from "./styles";
-import { api } from "../../services/api";
 
 export function TransactionsTable() {
 
-	useEffect(() => {
+	const { transactions } = useTransactions();
+	
+	function ListHeading() {
+		
+		if(transactions.length > 0) {
+			return (
+				<tr>
+					<th>Título</th>
+					<th>Preço</th>
+					<th>Categoria</th>
+					<th>Data</th>
+				</tr>
+			)
+		}
+		else {
+			return (
+				<tr>
+					<th></th>
+					<th></th>
+				</tr>
+			)
+		}
+	}
 
-		api.get("/transactions")
-			.then(response => console.log(response.data))
-			.catch(error => console.error(error));
+	function ListTransactions() {
 
-	}, [])
+		if(transactions.length > 0) {
+
+			return (
+				<>
+					{transactions.map(item => {
+
+						const amountFormat = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.amount);
+						const createAtFormat = new Intl.DateTimeFormat('pt-BR').format(new Date(item.createdAt));
+
+						return (
+							<tr key={item.id}>
+								<td className="text-bold">{item.title}</td>
+								<td className={`${item.type === 'deposit' ? 'price-positive' : 'price-negative' }`}>{amountFormat}</td>
+								<td>{item.category}</td>
+								<td>{createAtFormat}</td>
+							</tr>
+						)
+					})}
+				</>
+			)
+		}
+		else {
+			return (
+				<tr>
+					<td className="text-bold">Sem transações realizadas</td>
+					<td></td>
+				</tr>
+			)
+		}
+	}
 
 	return (
 		<Container>
@@ -18,27 +67,11 @@ export function TransactionsTable() {
 			<Table>
 				
 				<thead>
-					<tr>
-						<th>Título</th>
-						<th>Preço</th>
-						<th>Categoria</th>
-						<th>Data</th>
-					</tr>
+					<ListHeading />
 				</thead>
 
 				<tbody>
-					<tr>
-						<td className="text-bold">Desenvolvimento de site</td>
-						<td className="price-positive">R$ 12.000,00</td>
-						<td>Venda</td>
-						<td>13/04/2021</td>
-					</tr>
-					<tr>
-						<td className="text-bold">Desenvolvimento de site</td>
-						<td className="price-negative">R$ 5.000,00</td>
-						<td>Venda</td>
-						<td>13/04/2021</td>
-					</tr>
+					<ListTransactions />
 				</tbody>
 
 			</Table>

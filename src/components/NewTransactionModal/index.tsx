@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useTransactions } from '../../hooks/useTransactions';
+import { api } from '../../services/api';
 import Modal from 'react-modal';
-import { Container, Form } from './styles';
+
+import { Container, Form, RadioBox } from './styles';
 
 interface NewTransactionModalProps {
 	isNewTransactionModalOpen: boolean;
@@ -14,10 +17,53 @@ export function NewTransactionModal({
 	handleCloseNewTransactionModal
 }: NewTransactionModalProps) {
 
+	const { transactions, createTransaction } = useTransactions();
+
+	const [titleTransaction, setTitleTransaction] = useState('');
+	const [valorTransaction, setValorTransaction] = useState(0);
+	const [categoryTransaction, setCategoryTransaction] = useState('');
 	const [typeTransaction, setTypeTransaction] = useState('deposit');
 
-	function handleNewTypeTransaction(type: string) {
+	function handleNewTypeTransaction(type: 'deposit' | 'withdrawal') {
 		setTypeTransaction(type);
+	}
+
+	function handleCreateNewTransaction(event: FormEvent) {
+		event.preventDefault();
+
+		let newId = 0;
+		let idCreate = false;
+
+		do {
+			newId = Math.ceil(Math.random() * 100000);
+			const isExist = transactions.find(transaction => transaction.id === newId);
+			if(!isExist) { idCreate = true };
+		} while(idCreate === false);
+		
+		const newTransaction = {
+			id: newId,
+			title: titleTransaction,
+			amount: valorTransaction,
+			category: categoryTransaction,
+			type: typeTransaction,
+			createdAt: String(new Date())
+		}
+
+		api.post('/transactions', newTransaction)
+			.then((response) => {
+				setTitleTransaction('');
+				setValorTransaction(0);
+				setCategoryTransaction('');
+				handleCloseNewTransactionModal();
+				createTransaction(newTransaction)
+			})
+			.catch(error => console.error(error))
+
+	}
+
+	function handleSetCategoryTransaction(event: ChangeEvent<HTMLInputElement>) {
+		const newCategory = event.target.value;
+		setCategoryTransaction(newCategory);
 	}
 
 	return (
@@ -30,7 +76,7 @@ export function NewTransactionModal({
 
 			<Container>
 
-				<Form>
+				<Form onSubmit={handleCreateNewTransaction}>
 
 					<button
 						className='new-transaction__close-modal'
@@ -43,61 +89,53 @@ export function NewTransactionModal({
 						type="text"
 						placeholder='Título'
 						name='titulo'
+						value={titleTransaction}
+						onChange={event => setTitleTransaction(event.target.value)}
 					/>
 
 					<input
 						type="number"
 						placeholder='Valor'
 						name='valor'
+						value={valorTransaction}
+						onChange={event => setValorTransaction(Number(event.target.value))}
 					/>
 
 					<div className='new-transaction__transaction'>
 
-						<div
-							className={`new-transaction__transaction-field ${typeTransaction === 'deposit' ? 'new-transaction__transaction-field--active' : '' }`}
+						<RadioBox
+							type='button'
+							isActive={typeTransaction === 'deposit'}
+							activeColor={'#12A454'}
 							onClick={() => handleNewTypeTransaction('deposit')}
 						>
-							<input
-								type="radio"
-								name='transaction'
-								id='deposit'
-								checked={typeTransaction === 'deposit' ? true : false}
-							/>
 							<label htmlFor="deposit">
 								Entrada
 							</label>
-						</div>
+						</RadioBox>
 
-						<div
-							className={`new-transaction__transaction-field ${typeTransaction === 'withdrawal' ? 'new-transaction__transaction-field--active' : '' }`}
+						<RadioBox
+							type='button'
+							isActive={typeTransaction === 'withdrawal'}
+							activeColor={'#E52E4D'}
 							onClick={() => handleNewTypeTransaction('withdrawal')}
 						>
-							<input
-								type="radio"
-								name='transaction'
-								id='withdrawal'
-								checked={typeTransaction === 'withdrawal' ? true : false}
-							/>
 							<label htmlFor="withdrawal">
 								Saída
 							</label>
-						</div>
+						</RadioBox>
 
 					</div>
-
 
 					<input
 						type="text"
 						placeholder='Categoria'
 						name='categoria'
+						value={categoryTransaction}
+						onChange={handleSetCategoryTransaction}
 					/>
 
-					<button
-						type='submit'
-						onClick={() => console.log("oi")}
-					>
-						Cadastrar
-					</button>
+					<button type='submit'>Cadastrar</button>
 
 				</Form>
 
