@@ -5,6 +5,15 @@ import Modal from 'react-modal';
 
 import { Container, Form, RadioBox } from './styles';
 
+interface Transaction {
+	id: number;
+	title: string;
+	amount: number;
+	type: string;
+	category: string;
+	createdAt: string;
+}
+
 interface NewTransactionModalProps {
 	isNewTransactionModalOpen: boolean;
 	handleCloseNewTransactionModal: () => void;
@@ -34,9 +43,13 @@ export function NewTransactionModal({
 		let newId = 0;
 		let idCreate = false;
 
+		function existTransaction(transaction: Transaction) {
+			return transaction.id === newId;
+		};
+
 		do {
 			newId = Math.ceil(Math.random() * 100000);
-			const isExist = transactions.find(transaction => transaction.id === newId);
+			const isExist = transactions.find(existTransaction);
 			if(!isExist) { idCreate = true };
 		} while(idCreate === false);
 		
